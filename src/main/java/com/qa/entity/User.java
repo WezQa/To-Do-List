@@ -14,16 +14,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Data
-@Table(name = "Workout")
+@Table(name = "User")
 
-public class WorkoutChecklist {
+public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 
-	private String Workout;
-	private Long Kg;
-	private Long Reps;
-	private Boolean Done;
-
+	private String Name;
 }
