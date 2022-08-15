@@ -1,55 +1,75 @@
 package com.qa.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import com.qa.entity.WorkoutChecklist;
 import com.qa.service.WorkoutService;
 
-@ExtendWith(SpringExtension.class)
-@WebMvcTest
+@RunWith(MockitoJUnitRunner.class)
 public class WorkoutControllerTest {
 
-	@Autowired
-	private MockMvc mvc;
-
-	@Autowired
-	private ObjectMapper mapper;
-
-	@MockBean
+	@Mock
 	private WorkoutService service;
 
+	@InjectMocks
+	private WorkoutController controller;
+
+	@Before
+	public void init() {
+		MockitoAnnotations.initMocks(this);
+
+	}
+
 	@Test
-	public void createWorkoutssTest() throws Exception {
-		// This is essentially what Im going to be parsing in
-		// Doing the same thing Ive done so far with PostMan
-		WorkoutChecklist testWorkoutChecklist = new WorkoutChecklist("Bench Press", 50l, 8l, true);
-		// Cat expectedCat = new Cat(1L,"Bobby Brown", 12);
-		String testWorkoutChecklistAsJSON = this.mapper.writeValueAsString(testWorkoutChecklist);
+	public void testGetAllWorkoutChecklist() {
+		List<WorkoutChecklist> MOCK_LIST = new ArrayList<>();
+		MOCK_LIST.add(new WorkoutChecklist("Bench Press", 50l, 8l, true));
+		MOCK_LIST.add(new WorkoutChecklist("Squats", 50l, 8l, true));
+		when(service.readAllWorkoutChecklists()).thenReturn(MOCK_LIST);
+		assertEquals(MOCK_LIST, controller.getWorkoutChecklist());
 
-		// Mimic my behaviour -- the actual a save
-		// Service
-		Mockito.when(this.service.addWorkoutChecklist(testWorkoutChecklist)).thenReturn(testWorkoutChecklist);
+	}
 
-		// Mimic the behaviour of our Postman actitivity
-		// User -- On the internet
-		mvc.perform(post("/home/WorkoutChecklist").content(testWorkoutChecklistAsJSON)
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated())
-				.andExpect(content().json(testWorkoutChecklistAsJSON));
+	@Test
+	public void testCreateWorkoutChecklist() {
+		WorkoutChecklist MOCK_VALUE = new WorkoutChecklist("Bench Press", 50l, 8l, true);
+		when(service.addWorkoutChecklist(MOCK_VALUE)).thenReturn(MOCK_VALUE);
+		ResponseEntity<WorkoutChecklist> result = controller.updateWorkoutChecklist(MOCK_VALUE, null);
+		assertEquals(result.getStatusCode(), HttpStatus.CREATED);
+		assertEquals(result.getBody(), MOCK_VALUE);
 
-		Mockito.verify(this.service, Mockito.times(1)).addWorkoutChecklist(testWorkoutChecklist);
+	}
+
+	@Test
+	public void testupdateWorkoutChecklist() {
+		WorkoutChecklist MOCK_VALUE = new WorkoutChecklist("Bench Press", 50l, 8l, true);
+		when(service.updateWorkoutChecklist(MOCK_VALUE, 1L)).thenReturn(MOCK_VALUE);
+		ResponseEntity<WorkoutChecklist> result = controller.updateWorkoutChecklist(MOCK_VALUE, 1L);
+		assertEquals(result.getStatusCode(), HttpStatus.I_AM_A_TEAPOT);
+		assertEquals(result.getBody(), MOCK_VALUE);
+
+	}
+
+	@Test
+	public void testDeleteWorkoutChecklist() {
+		Boolean MOCK_DELETE_VALUE = true;
+		when(service.deleteByWorkoutChecklistID(1L)).thenReturn(MOCK_DELETE_VALUE);
+		ResponseEntity<Boolean> result = controller.deleteWorkoutChecklist(1L);
+		assertEquals(result.getStatusCode(), HttpStatus.NO_CONTENT);
 
 	}
 
