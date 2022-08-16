@@ -26,7 +26,7 @@ public class UserService {
 
 	// GET
 	public User readUser(String Name) {
-		return userRepo.findByName(Name).get();
+		return userRepo.findById(Name).get();
 	}
 
 	public List<User> readAllUsers() {
@@ -35,7 +35,7 @@ public class UserService {
 
 	// PUT
 	public User updateUser(User updateUser, String Name) {
-		Optional<User> currentUser = this.userRepo.findByName(Name);
+		Optional<User> currentUser = this.userRepo.findById(Name);
 
 		if (currentUser.get() instanceof User) {
 			User oldUser = currentUser.get();
@@ -50,7 +50,7 @@ public class UserService {
 
 	// DELETE
 	public boolean deleteByName(String Name) {
-		Optional<User> currentUser = this.userRepo.findByName(Name);
+		Optional<User> currentUser = this.userRepo.findById(Name);
 
 		boolean isPresent = (currentUser.isPresent()) ? true : false;
 
