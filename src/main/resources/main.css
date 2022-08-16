@@ -1,4 +1,4 @@
-/* Variables */
+
 :root {
 	--primary: #40ea40;
 	--upperbody: #ee3a3a;
@@ -16,9 +16,7 @@
 	--cardio-glow: 0px 0px 4px rgba(98, 234, 64, 0.75);
 
 }
-/* End of Variables */
 
-/* Resets */
 * {
 	margin: 0;
 	padding: 0;
@@ -33,7 +31,7 @@ input:not([type="radio"]):not([type="checkbox"]), button {
 	background: none;
 	cursor: initial;
 }
-/* End of Resets */
+
 
 body {
 	background: var(--light);
